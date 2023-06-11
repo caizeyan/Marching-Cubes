@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vertex_Hex
+public class Vertex
+{
+    public Vector3 worldPos = Vector3.zero;
+}
+
+//六边形中心顶点
+public class Vertex_Hex :Vertex
 {
     private Coord coord;
     private readonly int cellSize = 1;
-    public Vector3 centerPos = Vector3.zero;
 
     public Vertex_Hex(Coord coord, int cellSize = 1)
     {
         this.coord = coord;
         this.cellSize = cellSize;
+        worldPos = GetWorldPos();
     }
 
     public Vector2 GetWorldPos()
@@ -44,6 +50,40 @@ public class Vertex_Hex
         return coord.q * 100 + coord.r;
     }
 }
+
+
+//边中点顶点
+public class Vertex_Mid : Vertex
+{
+    public Vertex_Mid(Edge edge)
+    {
+        worldPos = (edge.vertexHexA.GetWorldPos() + edge.vertexHexB.GetWorldPos()) / 2;
+    }
+}
+
+public class Vertex_Center : Vertex
+{
+    
+}
+
+public class Vertex_TriangleCenter : Vertex_Center
+{
+    public Vertex_TriangleCenter(Triangle triangle)
+    {
+        worldPos = (triangle.vertexHexA.GetWorldPos() + triangle.vertexHexB.GetWorldPos() +
+                    triangle.vertexHexC.GetWorldPos()) / 3;
+    }
+}
+
+public class Vertex_QuadCenter : Vertex_Center
+{
+    public Vertex_QuadCenter(Quad quad)
+    {
+        worldPos = (quad.vertexHexA.GetWorldPos() + quad.vertexHexB.GetWorldPos() +
+                    quad.vertexHexC.GetWorldPos()+quad.vertexHexD.GetWorldPos()) / 4;
+    }
+}
+
 
 public class Coord
 {

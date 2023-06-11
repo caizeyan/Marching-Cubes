@@ -6,6 +6,8 @@ public class Edge
 {
     public Vertex_Hex vertexHexA;
     public Vertex_Hex vertexHexB;
+
+    public Vertex_Mid mid;
     //hash唯一id
     private int UID = 0;
 
@@ -15,6 +17,7 @@ public class Edge
         vertexHexA = hexA;
         vertexHexB = hexB;
         UID = GetEdgeUID(hexA, hexB);
+        mid = new Vertex_Mid(this);
     }
 
 

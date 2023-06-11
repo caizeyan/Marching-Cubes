@@ -13,6 +13,7 @@ public class Triangle
     public Edge edgeA;
     public Edge edgeB;
     public Edge edgeC;
+    public Vertex_TriangleCenter center;
     public HashSet<Edge> edges = new HashSet<Edge>();
     
     public Triangle(Vertex_Hex vertexHexA, Vertex_Hex vertexHexB, Vertex_Hex vertexHexC)
@@ -27,6 +28,8 @@ public class Triangle
         edges.Add(edgeA);
         edges.Add(edgeB);
         edges.Add(edgeC);
+
+        center = new Vertex_TriangleCenter(this);
     }
 
     //判断是否有共用的边
@@ -122,6 +125,15 @@ public class Triangle
         {
             result.AddRange(TriangleRing(i,vertices));
         }
+        return result;
+    }
+    
+    public List<SubQuad> SubDivide()
+    {
+        List<SubQuad> result = new List<SubQuad>();
+        result.Add(new SubQuad(vertexHexA,edgeA.mid,center,edgeC.mid));
+        result.Add(new SubQuad(vertexHexB,edgeB.mid,center,edgeA.mid));
+        result.Add(new SubQuad(vertexHexC,edgeC.mid,center,edgeB.mid));
         return result;
     }
 }

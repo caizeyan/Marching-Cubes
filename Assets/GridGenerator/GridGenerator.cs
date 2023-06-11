@@ -31,7 +31,7 @@ public class GridGenerator : MonoBehaviour
             Gizmos.color = Color.white;
 
             //vertex
-            foreach (var vertex in grid.vertexes)
+            foreach (var vertex in grid.hex_vertexes)
             {
                 Gizmos.DrawSphere(vertex.GetWorldPos(),.1f);
             }
@@ -56,6 +56,16 @@ public class GridGenerator : MonoBehaviour
                 //中心点
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawSphere((triangle.vertexHexA.GetWorldPos()+triangle.vertexHexB.GetWorldPos()+triangle.vertexHexC.GetWorldPos())/3,.1f);
+            }
+            
+            //triangle
+            foreach (var subQuads in grid.subQuads)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(subQuads.vertexA.worldPos,subQuads.vertexB.worldPos);
+                Gizmos.DrawLine(subQuads.vertexB.worldPos,subQuads.vertexC.worldPos);
+                Gizmos.DrawLine(subQuads.vertexC.worldPos,subQuads.vertexD.worldPos);
+                Gizmos.DrawLine(subQuads.vertexD.worldPos,subQuads.vertexA.worldPos);
             }
 
 

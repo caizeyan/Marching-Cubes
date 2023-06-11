@@ -9,17 +9,35 @@ public class Grid
 {
    private int radius;
    private int cellSize = 1;
-   public List<Vertex_Hex> vertexes ;
+   public List<Vertex_Hex> hex_vertexes ;
    public List<Edge> edges;
    public List<Triangle> triangles;
    public List<Quad> quads = new List<Quad>();
+   //细分四边形
+   public List<SubQuad> subQuads = new List<SubQuad>();
+   /*public List<Vertex_Mid> mid_vetexes;
+   public List<Vertex_Center> center_vertexed;*/
    public Grid(int radius,int cellSize = 1)
    {
       this.radius = radius;
       this.cellSize = cellSize;
-      vertexes =  Vertex_Hex.Hex(radius,cellSize);
-      triangles = Triangle.TriangleHex(radius, vertexes);
+      hex_vertexes =  Vertex_Hex.Hex(radius,cellSize);
+      triangles = Triangle.TriangleHex(radius, hex_vertexes);
       MergeAllTriangles();
+      SubDivide();
+   }
+
+   //细分网格
+   public void SubDivide()
+   {
+      foreach (var quad in quads)
+      {
+         subQuads.AddRange(quad.SubDivide());
+      }
+      foreach (var triangle in triangles)
+      {
+         subQuads.AddRange(triangle.SubDivide());
+      }
    }
 
 
@@ -61,6 +79,4 @@ public class Grid
    {
       triangles.Remove(triangle);
    }
-   
-   
 }
