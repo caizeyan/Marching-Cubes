@@ -7,18 +7,18 @@ using UnityEngine;
 /// </summary>
 public class Grid
 {
+   public static Grid Instant;
    private int radius;
    private int cellSize = 1;
+   public  Dictionary<int, Edge> edges = new Dictionary<int, Edge>();
    public List<Vertex_Hex> hex_vertexes ;
-   public List<Edge> edges;
    public List<Triangle> triangles;
    public List<Quad> quads = new List<Quad>();
    //细分四边形
    public List<SubQuad> subQuads = new List<SubQuad>();
-   /*public List<Vertex_Mid> mid_vetexes;
-   public List<Vertex_Center> center_vertexed;*/
    public Grid(int radius,int cellSize = 1)
    {
+      Instant = this;
       this.radius = radius;
       this.cellSize = cellSize;
       hex_vertexes =  Vertex_Hex.Hex(radius,cellSize);
@@ -68,7 +68,7 @@ public class Grid
       //移除三角形和被消除的边
       RemoveTriangle(triangle);
       RemoveTriangle(neighbors[randomNeighbor]);
-      Edge.RemoveEdge(quad.vertexHexA,quad.vertexHexC);
+      RemoveEdge(quad.vertexHexA,quad.vertexHexC);
    }
 
    /// <summary>
@@ -78,5 +78,56 @@ public class Grid
    public void RemoveTriangle(Triangle triangle)
    {
       triangles.Remove(triangle);
+   }
+
+   public void SmoothGrid(int times, float smoothFactor)
+   {
+      for (int i = 0; i < times; i++)
+      {
+         //随机选择一个
+         int index = Random.Range(0, subQuads.Count);
+         subQuads[index].SmoothToCube(smoothFactor);
+         //全体遍历一次
+         /*foreach (var quad in subQuads)
+         {
+            quad.SmoothToCube(smoothFactor);  
+         }*/
+      }
+   }
+   
+   
+     
+   public  Edge GetOrCreateEdge(Vertex_Hex a, Vertex_Hex b)
+   {
+      int uid =Edge.GetEdgeUID(a, b);
+      if (!edges.ContainsKey(uid))
+      {
+         edges[uid] = new Edge(a, b);
+      }
+      return edges[uid];
+   }
+    
+   public  Edge GetEdge(Vertex_Hex a, Vertex_Hex b)
+   {
+      int uid =Edge.GetEdgeUID(a, b);
+      return edges[uid];
+   }
+
+   public void RemoveEdge(Vertex_Hex a, Vertex_Hex b)
+   {
+      int uid = Edge.GetEdgeUID(a, b);
+      if (edges.ContainsKey(uid))
+      {
+         edges[uid] = null;
+      }
+   }
+    
+   public static void RemoveEdge(Edge edge,Dictionary<int,Edge> edges)
+   {
+     
+      if (edges.ContainsKey(edge.UID))
+      {
+         edges[edge.UID] = null;
+      }
    }
 }

@@ -165,8 +165,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 5
-  cellSize: 1
-  randomSeed: 245
+  cellSize: 5
+  smoothTimes: 120
+  smoothFactor: 0.1
+  randomSeed: 200
 --- !u!1 &1011492037
 GameObject:
   m_ObjectHideFlags: 0

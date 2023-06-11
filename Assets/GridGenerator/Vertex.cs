@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class Vertex
 {
-    public Vector3 worldPos = Vector3.zero;
+    public Vector3 initialPos = Vector3.zero;
+    public Vector3 offset = Vector3.zero;
+
+    public Vector3 CurPos
+    {
+        get
+        {
+            return initialPos + offset;
+        }
+    }
 }
 
 //六边形中心顶点
@@ -17,12 +26,11 @@ public class Vertex_Hex :Vertex
     {
         this.coord = coord;
         this.cellSize = cellSize;
-        worldPos = GetWorldPos();
+        initialPos = GetWorldPos();
     }
 
     public Vector2 GetWorldPos()
     {
-        
         return new Vector2(Mathf.Sqrt(3) * ( coord.q + coord.r/2.0f)*cellSize , 1.5f * coord.r*cellSize);
     }
 
@@ -57,7 +65,7 @@ public class Vertex_Mid : Vertex
 {
     public Vertex_Mid(Edge edge)
     {
-        worldPos = (edge.vertexHexA.GetWorldPos() + edge.vertexHexB.GetWorldPos()) / 2;
+        initialPos = (edge.vertexHexA.GetWorldPos() + edge.vertexHexB.GetWorldPos()) / 2;
     }
 }
 
@@ -70,7 +78,7 @@ public class Vertex_TriangleCenter : Vertex_Center
 {
     public Vertex_TriangleCenter(Triangle triangle)
     {
-        worldPos = (triangle.vertexHexA.GetWorldPos() + triangle.vertexHexB.GetWorldPos() +
+        initialPos = (triangle.vertexHexA.GetWorldPos() + triangle.vertexHexB.GetWorldPos() +
                     triangle.vertexHexC.GetWorldPos()) / 3;
     }
 }
@@ -79,10 +87,11 @@ public class Vertex_QuadCenter : Vertex_Center
 {
     public Vertex_QuadCenter(Quad quad)
     {
-        worldPos = (quad.vertexHexA.GetWorldPos() + quad.vertexHexB.GetWorldPos() +
+        initialPos = (quad.vertexHexA.GetWorldPos() + quad.vertexHexB.GetWorldPos() +
                     quad.vertexHexC.GetWorldPos()+quad.vertexHexD.GetWorldPos()) / 4;
     }
 }
+
 
 
 public class Coord

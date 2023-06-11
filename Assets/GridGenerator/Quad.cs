@@ -21,10 +21,10 @@ public class Quad
         vertexHexC = hexC;
         vertexHexD = hexD;
         
-        edgeAB = Edge.GetOrCreateEdge(hexA,hexB);
-        edgeBC = Edge.GetOrCreateEdge(hexB,hexC);
-        edgeCD = Edge.GetOrCreateEdge(hexC,hexD);
-        edgeDA = Edge.GetOrCreateEdge(hexD,hexA);
+        edgeAB = Grid.Instant.GetOrCreateEdge(hexA,hexB);
+        edgeBC = Grid.Instant.GetOrCreateEdge(hexB,hexC);
+        edgeCD = Grid.Instant.GetOrCreateEdge(hexC,hexD);
+        edgeDA = Grid.Instant.GetOrCreateEdge(hexD,hexA);
 
         center = new Vertex_QuadCenter(this);
     }

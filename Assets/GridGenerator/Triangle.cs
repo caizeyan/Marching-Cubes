@@ -22,9 +22,9 @@ public class Triangle
         this.vertexHexB = vertexHexB;
         this.vertexHexC = vertexHexC;
         //加边
-        edgeA = Edge.GetOrCreateEdge(vertexHexA,vertexHexB);
-        edgeB = Edge.GetOrCreateEdge(vertexHexB, vertexHexC);
-        edgeC = Edge.GetOrCreateEdge(vertexHexC, vertexHexA);
+        edgeA = Grid.Instant.GetOrCreateEdge(vertexHexA,vertexHexB);
+        edgeB = Grid.Instant.GetOrCreateEdge(vertexHexB, vertexHexC);
+        edgeC = Grid.Instant.GetOrCreateEdge(vertexHexC, vertexHexA);
         edges.Add(edgeA);
         edges.Add(edgeB);
         edges.Add(edgeC);

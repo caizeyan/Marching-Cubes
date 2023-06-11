@@ -16,12 +16,25 @@ public class GridGenerator : MonoBehaviour
     private int cellSize = 1;
     private Grid grid;
 
+    public int smoothTimes = 0;
+    public float smoothFactor = 0;
     public int randomSeed = 10;
 
     private void Awake()
     {
         Random.InitState(randomSeed);
         grid = new Grid(radius,cellSize);
+        grid.SmoothGrid(smoothTimes,smoothFactor);
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Random.InitState(randomSeed);
+            grid = new Grid(radius,cellSize);
+            grid.SmoothGrid(smoothTimes,smoothFactor);
+        }
     }
 
     private void OnDrawGizmos()
@@ -31,43 +44,49 @@ public class GridGenerator : MonoBehaviour
             Gizmos.color = Color.white;
 
             //vertex
-            foreach (var vertex in grid.hex_vertexes)
+            /*foreach (var vertex in grid.hex_vertexes)
             {
-                Gizmos.DrawSphere(vertex.GetWorldPos(),.1f);
-            }
+                Gizmos.DrawSphere(vertex.CurPos,.1f);
+            }*/
             
-            Gizmos.color = Color.black;
+            /*Gizmos.color = Color.black;
 
             foreach (var quad in grid.quads)
             {
-                Gizmos.DrawLine(quad.vertexHexA.GetWorldPos(),quad.vertexHexB.GetWorldPos());
-                Gizmos.DrawLine(quad.vertexHexB.GetWorldPos(),quad.vertexHexC.GetWorldPos());
-                Gizmos.DrawLine(quad.vertexHexC.GetWorldPos(),quad.vertexHexD.GetWorldPos());
-                Gizmos.DrawLine(quad.vertexHexA.GetWorldPos(),quad.vertexHexD.GetWorldPos());
+                Gizmos.DrawLine(quad.vertexHexA.CurPos,quad.vertexHexB.CurPos);
+                Gizmos.DrawLine(quad.vertexHexB.CurPos,quad.vertexHexC.CurPos);
+                Gizmos.DrawLine(quad.vertexHexC.CurPos,quad.vertexHexD.CurPos);
+                Gizmos.DrawLine(quad.vertexHexA.CurPos,quad.vertexHexD.CurPos);
             }
             
             //triangle
             foreach (var triangle in grid.triangles)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(triangle.vertexHexA.GetWorldPos(),triangle.vertexHexB.GetWorldPos());
-                Gizmos.DrawLine(triangle.vertexHexB.GetWorldPos(),triangle.vertexHexC.GetWorldPos());
-                Gizmos.DrawLine(triangle.vertexHexA.GetWorldPos(),triangle.vertexHexC.GetWorldPos());
+                Gizmos.DrawLine(triangle.vertexHexA.CurPos,triangle.vertexHexB.CurPos);
+                Gizmos.DrawLine(triangle.vertexHexB.CurPos,triangle.vertexHexC.CurPos);
+                Gizmos.DrawLine(triangle.vertexHexA.CurPos,triangle.vertexHexC.CurPos);
                 //中心点
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawSphere((triangle.vertexHexA.GetWorldPos()+triangle.vertexHexB.GetWorldPos()+triangle.vertexHexC.GetWorldPos())/3,.1f);
-            }
+            }*/
             
-            //triangle
+
+            //subQuad
             foreach (var subQuads in grid.subQuads)
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawLine(subQuads.vertexA.worldPos,subQuads.vertexB.worldPos);
-                Gizmos.DrawLine(subQuads.vertexB.worldPos,subQuads.vertexC.worldPos);
-                Gizmos.DrawLine(subQuads.vertexC.worldPos,subQuads.vertexD.worldPos);
-                Gizmos.DrawLine(subQuads.vertexD.worldPos,subQuads.vertexA.worldPos);
+                Gizmos.DrawLine(subQuads.vertexA.CurPos,subQuads.vertexB.CurPos);
+                Gizmos.DrawLine(subQuads.vertexB.CurPos,subQuads.vertexC.CurPos);
+                Gizmos.DrawLine(subQuads.vertexC.CurPos,subQuads.vertexD.CurPos);
+                Gizmos.DrawLine(subQuads.vertexD.CurPos,subQuads.vertexA.CurPos);
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(subQuads.vertexA.CurPos,.1f);
+                Gizmos.DrawSphere(subQuads.vertexB.CurPos,.1f);
+                Gizmos.DrawSphere(subQuads.vertexC.CurPos,.1f);
+                Gizmos.DrawSphere(subQuads.vertexD.CurPos,.1f);
             }
-
+            
 
         }
       
