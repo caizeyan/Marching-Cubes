@@ -1,25 +1,97 @@
 ﻿//三角形
 
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class Triangle
 {
-    public Vertex a;
-    public Vertex b;
-    public Vertex c;
+    public Vertex_Hex vertexHexA;
+    public Vertex_Hex vertexHexB;
+    public Vertex_Hex vertexHexC;
 
-    public Triangle(Vertex a, Vertex b, Vertex c)
+    public Edge edgeA;
+    public Edge edgeB;
+    public Edge edgeC;
+    public HashSet<Edge> edges = new HashSet<Edge>();
+    
+    public Triangle(Vertex_Hex vertexHexA, Vertex_Hex vertexHexB, Vertex_Hex vertexHexC)
     {
-        this.a = a;
-        this.b = b;
-        this.c = c;
+        this.vertexHexA = vertexHexA;
+        this.vertexHexB = vertexHexB;
+        this.vertexHexC = vertexHexC;
+        //加边
+        edgeA = Edge.GetOrCreateEdge(vertexHexA,vertexHexB);
+        edgeB = Edge.GetOrCreateEdge(vertexHexB, vertexHexC);
+        edgeC = Edge.GetOrCreateEdge(vertexHexC, vertexHexA);
+        edges.Add(edgeA);
+        edges.Add(edgeB);
+        edges.Add(edgeC);
     }
 
-    private static List<Triangle> TriangleRing(int radius,List<Vertex> vertices)
+    //判断是否有共用的边
+    public bool IsNeighbor(Triangle target)
+    {
+        HashSet<Edge> temp = new HashSet<Edge>(edges);
+        temp.IntersectWith(target.edges);
+        return temp.Count == 1;
+    }
+    
+    //判断是否有共用的边
+    public Edge GetNeighborEdge(Triangle target)
+    {
+        HashSet<Edge> temp = new HashSet<Edge>(edges);
+        temp.IntersectWith(target.edges);
+        return temp.Single();
+    }
+
+    
+    //找到所有相邻的三角形
+    public List<Triangle> FindAllNeighbors(List<Triangle> triangles)
     {
         List<Triangle> result = new List<Triangle>();
-        List<Vertex> outVertex = Vertex.GetRingVertices(vertices, radius);
-        List<Vertex> inVertex = Vertex.GetRingVertices(vertices, radius - 1);
+        foreach (var triangle in triangles)
+        {
+            if (IsNeighbor(triangle))
+            {
+                result.Add(triangle);
+            }
+        }
+        return result;
+    }
+
+    //找到独立的点
+    public Vertex_Hex FindIsolateVertex(Edge edge)
+    {
+        int numA = edge.vertexHexA.ConvertToNum();
+        int numB = edge.vertexHexB.ConvertToNum();
+        if (vertexHexA.ConvertToNum() != numA && vertexHexA.ConvertToNum() != numB)
+        {
+            return vertexHexA;
+        }
+        if (vertexHexB.ConvertToNum() != numA && vertexHexB.ConvertToNum() != numB)
+        {
+            return vertexHexB;
+        }
+
+        return vertexHexC;
+    }
+
+    public Quad MergeNeighborTriangle(Triangle neighbor)
+    {
+        var edge = GetNeighborEdge(neighbor);
+        var a = edge.vertexHexA;
+        var c = edge.vertexHexB;
+        var b = FindIsolateVertex(edge);
+        var d = neighbor.FindIsolateVertex(edge);
+        return new Quad(a, b, c, d);
+    }
+
+    private static List<Triangle> TriangleRing(int radius,List<Vertex_Hex> vertices)
+    {
+        List<Triangle> result = new List<Triangle>();
+        List<Vertex_Hex> outVertex = Vertex_Hex.GetRingVertices(vertices, radius);
+        List<Vertex_Hex> inVertex = Vertex_Hex.GetRingVertices(vertices, radius - 1);
         int outCount = outVertex.Count;
         int inCount = inVertex.Count;
         for (int i = 0; i < 6; i++)
@@ -43,7 +115,7 @@ public class Triangle
         return result;
     }
 
-    public static List<Triangle> TriangleHex(int radius, List<Vertex> vertices)
+    public static List<Triangle> TriangleHex(int radius, List<Vertex_Hex> vertices)
     {
         List<Triangle> result = new List<Triangle>();
         for (int i = 1; i <= radius; i++)

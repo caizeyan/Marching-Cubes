@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vertex
+public class Vertex_Hex
 {
     private Coord coord;
     private readonly int cellSize = 1;
     public Vector3 centerPos = Vector3.zero;
 
-    public Vertex(Coord coord, int cellSize = 1)
+    public Vertex_Hex(Coord coord, int cellSize = 1)
     {
         this.coord = coord;
         this.cellSize = cellSize;
@@ -20,22 +20,28 @@ public class Vertex
         return new Vector2(Mathf.Sqrt(3) * ( coord.q + coord.r/2.0f)*cellSize , 1.5f * coord.r*cellSize);
     }
 
-    public static List<Vertex> Hex(int radius,int cellSize = 1)
+    public static List<Vertex_Hex> Hex(int radius,int cellSize = 1)
     {
-        List<Vertex> result = new List<Vertex>();
+        List<Vertex_Hex> result = new List<Vertex_Hex>();
         foreach (var coord in Coord.CoordHex( new Coord(0,0,0),radius))
         {
-            result.Add(new Vertex(coord,cellSize));
+            result.Add(new Vertex_Hex(coord,cellSize));
         }
 
         return result;
     }
 
-    public static List<Vertex> GetRingVertices(List<Vertex> vertices,int radius)
+    public static List<Vertex_Hex> GetRingVertices(List<Vertex_Hex> vertices,int radius)
     {
         if (radius == 0) return vertices.GetRange(0, 1);
         // 前面总数：(a1 + an)/2 * n 
         return vertices.GetRange((3+3*(radius-1))*(radius-1)+1, 6 * radius);
+    }
+
+    //将值转变为num 为hash做准备 
+    public int ConvertToNum()
+    {
+        return coord.q * 100 + coord.r;
     }
 }
 

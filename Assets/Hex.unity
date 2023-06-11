@@ -164,8 +164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec1d6f9a4aa01ed45961bf3da0b35a58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 5
   cellSize: 1
+  randomSeed: 245
 --- !u!1 &1011492037
 GameObject:
   m_ObjectHideFlags: 0

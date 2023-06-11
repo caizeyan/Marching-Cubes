@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 /// <summary>
@@ -15,32 +16,49 @@ public class GridGenerator : MonoBehaviour
     private int cellSize = 1;
     private Grid grid;
 
+    public int randomSeed = 10;
+
     private void Awake()
     {
+        Random.InitState(randomSeed);
         grid = new Grid(radius,cellSize);
     }
 
     private void OnDrawGizmos()
     {
         if (grid != null)
-        {
-            //triangle
-            foreach (var triangle in grid.triangles)
-            {
-                Gizmos.DrawLine(triangle.a.GetWorldPos(),triangle.b.GetWorldPos());
-                Gizmos.DrawLine(triangle.b.GetWorldPos(),triangle.c.GetWorldPos());
-                Gizmos.DrawLine(triangle.a.GetWorldPos(),triangle.c.GetWorldPos());
-                
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere((triangle.a.GetWorldPos()+triangle.b.GetWorldPos()+triangle.c.GetWorldPos())/3,.1f);
+        {                
+            Gizmos.color = Color.white;
 
-            }      
-            
             //vertex
             foreach (var vertex in grid.vertexes)
             {
                 Gizmos.DrawSphere(vertex.GetWorldPos(),.1f);
             }
+            
+            Gizmos.color = Color.black;
+
+            foreach (var quad in grid.quads)
+            {
+                Gizmos.DrawLine(quad.vertexHexA.GetWorldPos(),quad.vertexHexB.GetWorldPos());
+                Gizmos.DrawLine(quad.vertexHexB.GetWorldPos(),quad.vertexHexC.GetWorldPos());
+                Gizmos.DrawLine(quad.vertexHexC.GetWorldPos(),quad.vertexHexD.GetWorldPos());
+                Gizmos.DrawLine(quad.vertexHexA.GetWorldPos(),quad.vertexHexD.GetWorldPos());
+            }
+            
+            //triangle
+            foreach (var triangle in grid.triangles)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(triangle.vertexHexA.GetWorldPos(),triangle.vertexHexB.GetWorldPos());
+                Gizmos.DrawLine(triangle.vertexHexB.GetWorldPos(),triangle.vertexHexC.GetWorldPos());
+                Gizmos.DrawLine(triangle.vertexHexA.GetWorldPos(),triangle.vertexHexC.GetWorldPos());
+                //中心点
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere((triangle.vertexHexA.GetWorldPos()+triangle.vertexHexB.GetWorldPos()+triangle.vertexHexC.GetWorldPos())/3,.1f);
+            }
+
+
         }
       
     }
