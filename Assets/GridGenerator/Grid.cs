@@ -85,13 +85,13 @@ public class Grid
       for (int i = 0; i < times; i++)
       {
          //随机选择一个
-         int index = Random.Range(0, subQuads.Count);
-         subQuads[index].SmoothToCube(smoothFactor);
+         /*int index = Random.Range(0, subQuads.Count);
+         subQuads[index].SmoothToCube(smoothFactor);*/
          //全体遍历一次
-         /*foreach (var quad in subQuads)
+         foreach (var quad in subQuads)
          {
             quad.SmoothToCube(smoothFactor);  
-         }*/
+         }
       }
    }
    

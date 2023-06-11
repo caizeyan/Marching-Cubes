@@ -15,6 +15,15 @@ public class SubQuad
         vertexB = b;
         vertexC = c;
         vertexD = d;
+        
+        //确保顺序为顺时针
+        Vector2 vecAB = vertexA.initialPos - vertexB.initialPos;
+        Vector2 vecAD = vertexA.initialPos - vertexD.initialPos;
+        if (vecAB.x*vecAD.y < vecAB.y*vecAD.x)
+        {
+            vertexB = d;
+            vertexD = b;
+        }
     }
 
     /// <summary>
@@ -32,9 +41,17 @@ public class SubQuad
         Vector3 cubeBPos = Quaternion.AngleAxis(90, Vector3.forward) * cubeAPos;
         Vector3 cubeCPos = Quaternion.AngleAxis(180, Vector3.forward) * cubeAPos;
         Vector3 cubeDPos = Quaternion.AngleAxis(270, Vector3.forward) * cubeAPos;
+        /*Debug.LogError("center"+centerPos);
+        /*Debug.LogError("offA"+ (vertexA.CurPos - centerPos));
+        Debug.LogError("offB"+  Quaternion.AngleAxis(90, Vector3.forward) * (vertexB.CurPos - centerPos));
+        Debug.LogError("offC"+  Quaternion.AngleAxis(180, Vector3.forward) * (vertexC.CurPos - centerPos));
+        Debug.LogError("offD"+  Quaternion.AngleAxis(270, Vector3.forward) * (vertexD.CurPos - centerPos));
+        Debug.LogError("cubeA"+cubeAPos);#1#*/
         vertexA.offset += (cubeAPos + centerPos - vertexA.CurPos) * factor;
         vertexB.offset += (cubeBPos + centerPos - vertexB.CurPos) * factor;
         vertexC.offset += (cubeCPos + centerPos - vertexC.CurPos) * factor;
         vertexD.offset += (cubeDPos + centerPos - vertexD.CurPos) * factor;
+        
+      
     }
 }
