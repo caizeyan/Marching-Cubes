@@ -14,7 +14,13 @@ public class GridGenerator : MonoBehaviour
     private int radius = 5;
     [SerializeField]
     private int cellSize = 1;
+
+    [SerializeField] private int cellHeight = 1;
+    [SerializeField] private int height = 1;
     private Grid grid;
+
+    public Transform activeTest;
+    public Transform inactiveTest;
 
     public int smoothTimes = 0;
     public float smoothFactor = 0;
@@ -23,7 +29,7 @@ public class GridGenerator : MonoBehaviour
     private void Awake()
     {
         Random.InitState(randomSeed);
-        grid = new Grid(radius,cellSize);
+        grid = new Grid(radius,height,cellSize,cellHeight);
         grid.SmoothGrid(smoothTimes,smoothFactor);
     }
 
@@ -32,8 +38,19 @@ public class GridGenerator : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             Random.InitState(randomSeed);
-            grid = new Grid(radius,cellSize);
+            grid = new Grid(radius,height,cellSize,cellHeight);
             grid.SmoothGrid(smoothTimes,smoothFactor);
+        }
+
+        foreach (var vertexY in grid.vertexes_y)
+        {
+            if (Vector3.Distance(vertexY.CurPos,activeTest.position)<2)
+            {
+                vertexY.isActive = true;
+            }else if (Vector3.Distance(vertexY.CurPos,inactiveTest.position)<2)
+            {
+                vertexY.isActive = false;
+            }
         }
     }
 
@@ -73,7 +90,7 @@ public class GridGenerator : MonoBehaviour
             
 
             //subQuad
-            foreach (var subQuads in grid.subQuads)
+            /*foreach (var subQuads in grid.subQuads)
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(subQuads.vertexA.CurPos,subQuads.vertexB.CurPos);
@@ -85,6 +102,20 @@ public class GridGenerator : MonoBehaviour
                 Gizmos.DrawSphere(subQuads.vertexB.CurPos,.1f);
                 Gizmos.DrawSphere(subQuads.vertexC.CurPos,.1f);
                 Gizmos.DrawSphere(subQuads.vertexD.CurPos,.1f);
+            }*/
+            
+            //
+            foreach (var vertexY in grid.vertexes_y)
+            {
+                if (vertexY.isActive)
+                {
+                    Gizmos.color = Color.red;
+                }
+                else
+                {
+                    Gizmos.color = Color.white;
+                }
+                Gizmos.DrawSphere(vertexY.CurPos,.1f);
             }
             
 

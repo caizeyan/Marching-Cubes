@@ -9,22 +9,39 @@ public class Grid
 {
    public static Grid Instant;
    private int radius;
-   private int cellSize = 1;
+   private int cellSize;
+   private int height ;
+   private int cellHeight;
    public  Dictionary<int, Edge> edges = new Dictionary<int, Edge>();
-   public List<Vertex_Hex> hex_vertexes ;
+   public List<VertexHex> vertexes_hex ;
    public List<Triangle> triangles;
    public List<Quad> quads = new List<Quad>();
    //细分四边形
    public List<SubQuad> subQuads = new List<SubQuad>();
-   public Grid(int radius,int cellSize = 1)
+   public List<VertexY> vertexes_y = new List<VertexY>();
+   public Grid(int radius,int height,int cellSize ,int cellHeight )
    {
       Instant = this;
       this.radius = radius;
       this.cellSize = cellSize;
-      hex_vertexes =  Vertex_Hex.Hex(radius,cellSize);
-      triangles = Triangle.TriangleHex(radius, hex_vertexes);
+      this.height = height;
+      this.cellHeight = cellHeight;
+      vertexes_hex =  VertexHex.Hex(radius,cellSize);
+      triangles = Triangle.TriangleHex(radius, vertexes_hex);
       MergeAllTriangles();
       SubDivide();
+      for (int i = 0; i < height; i++)
+      {
+         for (int j = 0; j < vertexes_hex.Count; j++)
+         {
+            vertexes_y.Add(new VertexY(vertexes_hex[j],i));
+         }
+      }
+   }
+
+   public int GetCellHeight()
+   {
+      return cellHeight;
    }
 
    //细分网格
@@ -97,7 +114,7 @@ public class Grid
    
    
      
-   public  Edge GetOrCreateEdge(Vertex_Hex a, Vertex_Hex b)
+   public  Edge GetOrCreateEdge(VertexHex a, VertexHex b)
    {
       int uid =Edge.GetEdgeUID(a, b);
       if (!edges.ContainsKey(uid))
@@ -107,13 +124,13 @@ public class Grid
       return edges[uid];
    }
     
-   public  Edge GetEdge(Vertex_Hex a, Vertex_Hex b)
+   public  Edge GetEdge(VertexHex a, VertexHex b)
    {
       int uid =Edge.GetEdgeUID(a, b);
       return edges[uid];
    }
 
-   public void RemoveEdge(Vertex_Hex a, Vertex_Hex b)
+   public void RemoveEdge(VertexHex a, VertexHex b)
    {
       int uid = Edge.GetEdgeUID(a, b);
       if (edges.ContainsKey(uid))

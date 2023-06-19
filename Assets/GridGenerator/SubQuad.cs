@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SubQuad
 {
-    public Vertex_Hex vertexA;
-    public Vertex_Mid vertexB;
-    public Vertex_Center vertexC;
-    public Vertex_Mid vertexD;
+    public VertexHex vertexA;
+    public VertexMid vertexB;
+    public VertexCenter vertexC;
+    public VertexMid vertexD;
 
-    public SubQuad(Vertex_Hex a, Vertex_Mid b, Vertex_Center c, Vertex_Mid d)
+    public SubQuad(VertexHex a, VertexMid b, VertexCenter c, VertexMid d)
     {
         vertexA = a;
         vertexB = b;
@@ -17,9 +17,9 @@ public class SubQuad
         vertexD = d;
         
         //确保顺序为顺时针
-        Vector2 vecAB = vertexA.initialPos - vertexB.initialPos;
-        Vector2 vecAD = vertexA.initialPos - vertexD.initialPos;
-        if (vecAB.x*vecAD.y < vecAB.y*vecAD.x)
+        Vector3 vecAB = vertexA.initialPos - vertexB.initialPos;
+        Vector3 vecAD = vertexA.initialPos - vertexD.initialPos;
+        if (vecAB.x*vecAD.z < vecAB.z*vecAD.x)
         {
             vertexB = d;
             vertexD = b;
@@ -35,18 +35,12 @@ public class SubQuad
         factor = Mathf.Clamp01(factor);
         Vector3 centerPos = (vertexA.CurPos + vertexB.CurPos + vertexC.CurPos + vertexD.CurPos)/4;
         Vector3 cubeAPos = ((vertexA.CurPos - centerPos) +
-                           Quaternion.AngleAxis(-90, Vector3.forward) * (vertexB.CurPos - centerPos) +
-                           Quaternion.AngleAxis(-180, Vector3.forward) * (vertexC.CurPos - centerPos) +
-                           Quaternion.AngleAxis(-270, Vector3.forward) * (vertexD.CurPos - centerPos)) / 4;
-        Vector3 cubeBPos = Quaternion.AngleAxis(90, Vector3.forward) * cubeAPos;
-        Vector3 cubeCPos = Quaternion.AngleAxis(180, Vector3.forward) * cubeAPos;
-        Vector3 cubeDPos = Quaternion.AngleAxis(270, Vector3.forward) * cubeAPos;
-        /*Debug.LogError("center"+centerPos);
-        /*Debug.LogError("offA"+ (vertexA.CurPos - centerPos));
-        Debug.LogError("offB"+  Quaternion.AngleAxis(90, Vector3.forward) * (vertexB.CurPos - centerPos));
-        Debug.LogError("offC"+  Quaternion.AngleAxis(180, Vector3.forward) * (vertexC.CurPos - centerPos));
-        Debug.LogError("offD"+  Quaternion.AngleAxis(270, Vector3.forward) * (vertexD.CurPos - centerPos));
-        Debug.LogError("cubeA"+cubeAPos);#1#*/
+                           Quaternion.AngleAxis(90, Vector3.up) * (vertexB.CurPos - centerPos) +
+                           Quaternion.AngleAxis(180, Vector3.up) * (vertexC.CurPos - centerPos) +
+                           Quaternion.AngleAxis(270, Vector3.up) * (vertexD.CurPos - centerPos)) / 4;
+        Vector3 cubeBPos = Quaternion.AngleAxis(-90, Vector3.up) * cubeAPos;
+        Vector3 cubeCPos = Quaternion.AngleAxis(-180, Vector3.up) * cubeAPos;
+        Vector3 cubeDPos = Quaternion.AngleAxis(-270, Vector3.up) * cubeAPos;
         vertexA.offset += (cubeAPos + centerPos - vertexA.CurPos) * factor;
         vertexB.offset += (cubeBPos + centerPos - vertexB.CurPos) * factor;
         vertexC.offset += (cubeCPos + centerPos - vertexC.CurPos) * factor;

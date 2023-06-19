@@ -2,19 +2,19 @@ using System.Collections.Generic;
 
 public class Quad
 {
-    public Vertex_Hex vertexHexA;
-    public Vertex_Hex vertexHexB;
-    public Vertex_Hex vertexHexC;
-    public Vertex_Hex vertexHexD;
+    public VertexHex vertexHexA;
+    public VertexHex vertexHexB;
+    public VertexHex vertexHexC;
+    public VertexHex vertexHexD;
 
     public Edge edgeAB;
     public Edge edgeBC;
     public Edge edgeCD;
     public Edge edgeDA;
 
-    public Vertex_QuadCenter center;
+    public VertexQuadCenter center;
 
-    public Quad(Vertex_Hex hexA, Vertex_Hex hexB, Vertex_Hex hexC, Vertex_Hex hexD)
+    public Quad(VertexHex hexA, VertexHex hexB, VertexHex hexC, VertexHex hexD)
     {
         vertexHexA = hexA;
         vertexHexB = hexB;
@@ -26,7 +26,7 @@ public class Quad
         edgeCD = Grid.Instant.GetOrCreateEdge(hexC,hexD);
         edgeDA = Grid.Instant.GetOrCreateEdge(hexD,hexA);
 
-        center = new Vertex_QuadCenter(this);
+        center = new VertexQuadCenter(this);
     }
 
     public List<SubQuad> SubDivide()

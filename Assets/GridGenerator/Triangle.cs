@@ -6,17 +6,17 @@ using UnityEngine;
 
 public class Triangle
 {
-    public Vertex_Hex vertexHexA;
-    public Vertex_Hex vertexHexB;
-    public Vertex_Hex vertexHexC;
+    public VertexHex vertexHexA;
+    public VertexHex vertexHexB;
+    public VertexHex vertexHexC;
 
     public Edge edgeA;
     public Edge edgeB;
     public Edge edgeC;
-    public Vertex_TriangleCenter center;
+    public VertexTriangleCenter center;
     public HashSet<Edge> edges = new HashSet<Edge>();
     
-    public Triangle(Vertex_Hex vertexHexA, Vertex_Hex vertexHexB, Vertex_Hex vertexHexC)
+    public Triangle(VertexHex vertexHexA, VertexHex vertexHexB, VertexHex vertexHexC)
     {
         this.vertexHexA = vertexHexA;
         this.vertexHexB = vertexHexB;
@@ -29,7 +29,7 @@ public class Triangle
         edges.Add(edgeB);
         edges.Add(edgeC);
 
-        center = new Vertex_TriangleCenter(this);
+        center = new VertexTriangleCenter(this);
     }
 
     //判断是否有共用的边
@@ -64,7 +64,7 @@ public class Triangle
     }
 
     //找到独立的点
-    public Vertex_Hex FindIsolateVertex(Edge edge)
+    public VertexHex FindIsolateVertex(Edge edge)
     {
         int numA = edge.vertexHexA.ConvertToNum();
         int numB = edge.vertexHexB.ConvertToNum();
@@ -90,11 +90,11 @@ public class Triangle
         return new Quad(a, b, c, d);
     }
 
-    private static List<Triangle> TriangleRing(int radius,List<Vertex_Hex> vertices)
+    private static List<Triangle> TriangleRing(int radius,List<VertexHex> vertices)
     {
         List<Triangle> result = new List<Triangle>();
-        List<Vertex_Hex> outVertex = Vertex_Hex.GetRingVertices(vertices, radius);
-        List<Vertex_Hex> inVertex = Vertex_Hex.GetRingVertices(vertices, radius - 1);
+        List<VertexHex> outVertex = VertexHex.GetRingVertices(vertices, radius);
+        List<VertexHex> inVertex = VertexHex.GetRingVertices(vertices, radius - 1);
         int outCount = outVertex.Count;
         int inCount = inVertex.Count;
         for (int i = 0; i < 6; i++)
@@ -118,7 +118,7 @@ public class Triangle
         return result;
     }
 
-    public static List<Triangle> TriangleHex(int radius, List<Vertex_Hex> vertices)
+    public static List<Triangle> TriangleHex(int radius, List<VertexHex> vertices)
     {
         List<Triangle> result = new List<Triangle>();
         for (int i = 1; i <= radius; i++)

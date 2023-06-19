@@ -17,35 +17,35 @@ public class Vertex
 }
 
 //六边形中心顶点
-public class Vertex_Hex :Vertex
+public class VertexHex :Vertex
 {
     private Coord coord;
     private readonly int cellSize = 1;
 
-    public Vertex_Hex(Coord coord, int cellSize = 1)
+    public VertexHex(Coord coord, int cellSize = 1)
     {
         this.coord = coord;
         this.cellSize = cellSize;
         initialPos = GetWorldPos();
     }
 
-    public Vector2 GetWorldPos()
+    public Vector3 GetWorldPos()
     {
-        return new Vector2(Mathf.Sqrt(3) * ( coord.q + coord.r/2.0f)*cellSize , 1.5f * coord.r*cellSize);
+        return new Vector3(Mathf.Sqrt(3) * ( coord.q + coord.r/2.0f)*cellSize,0 , 1.5f * coord.r*cellSize);
     }
 
-    public static List<Vertex_Hex> Hex(int radius,int cellSize = 1)
+    public static List<VertexHex> Hex(int radius,int cellSize = 1)
     {
-        List<Vertex_Hex> result = new List<Vertex_Hex>();
+        List<VertexHex> result = new List<VertexHex>();
         foreach (var coord in Coord.CoordHex( new Coord(0,0,0),radius))
         {
-            result.Add(new Vertex_Hex(coord,cellSize));
+            result.Add(new VertexHex(coord,cellSize));
         }
 
         return result;
     }
 
-    public static List<Vertex_Hex> GetRingVertices(List<Vertex_Hex> vertices,int radius)
+    public static List<VertexHex> GetRingVertices(List<VertexHex> vertices,int radius)
     {
         if (radius == 0) return vertices.GetRange(0, 1);
         // 前面总数：(a1 + an)/2 * n 
@@ -61,38 +61,49 @@ public class Vertex_Hex :Vertex
 
 
 //边中点顶点
-public class Vertex_Mid : Vertex
+public class VertexMid : Vertex
 {
-    public Vertex_Mid(Edge edge)
+    public VertexMid(Edge edge)
     {
         initialPos = (edge.vertexHexA.GetWorldPos() + edge.vertexHexB.GetWorldPos()) / 2;
     }
 }
 
-public class Vertex_Center : Vertex
+public class VertexCenter : Vertex
 {
     
 }
 
-public class Vertex_TriangleCenter : Vertex_Center
+public class VertexTriangleCenter : VertexCenter
 {
-    public Vertex_TriangleCenter(Triangle triangle)
+    public VertexTriangleCenter(Triangle triangle)
     {
         initialPos = (triangle.vertexHexA.GetWorldPos() + triangle.vertexHexB.GetWorldPos() +
                     triangle.vertexHexC.GetWorldPos()) / 3;
     }
 }
 
-public class Vertex_QuadCenter : Vertex_Center
+public class VertexQuadCenter : VertexCenter
 {
-    public Vertex_QuadCenter(Quad quad)
+    public VertexQuadCenter(Quad quad)
     {
         initialPos = (quad.vertexHexA.GetWorldPos() + quad.vertexHexB.GetWorldPos() +
                     quad.vertexHexC.GetWorldPos()+quad.vertexHexD.GetWorldPos()) / 4;
     }
 }
 
-
+public class VertexY : Vertex
+{
+    public VertexHex v;
+    public int y;
+    public bool isActive = false;
+    public VertexY(VertexHex baseV, int y)
+    {
+        v = baseV;
+        this.y = y;
+        initialPos = baseV.GetWorldPos() + Vector3.up * (y * Grid.Instant.GetCellHeight());
+    }
+}
 
 public class Coord
 {
