@@ -7,7 +7,7 @@ public class Vertex
     public Vector3 initialPos = Vector3.zero;
     public Vector3 offset = Vector3.zero;
 
-    public Vector3 CurPos
+    public virtual Vector3 CurPos
     {
         get
         {
@@ -94,15 +94,27 @@ public class VertexQuadCenter : VertexCenter
 
 public class VertexY : Vertex
 {
-    public VertexHex v;
+    public Vertex v;
     public int y;
     public bool isActive = false;
-    public VertexY(VertexHex baseV, int y)
+
+    public override Vector3 CurPos
+    {
+        get
+        {
+            return v.CurPos + Vector3.up * (y * MyGrid.Instant.GetCellHeight());
+        }
+    }
+
+    public VertexY(Vertex baseV, int y)
     {
         v = baseV;
         this.y = y;
-        initialPos = baseV.GetWorldPos() + Vector3.up * (y * Grid.Instant.GetCellHeight());
+        initialPos = baseV.initialPos + Vector3.up * (y * MyGrid.Instant.GetCellHeight());
     }
+    
+    
+    
 }
 
 public class Coord

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,7 +18,7 @@ public class GridGenerator : MonoBehaviour
 
     [SerializeField] private int cellHeight = 1;
     [SerializeField] private int height = 1;
-    private Grid grid;
+    private MyGrid _myGrid;
 
     public Transform activeTest;
     public Transform inactiveTest;
@@ -29,8 +30,8 @@ public class GridGenerator : MonoBehaviour
     private void Awake()
     {
         Random.InitState(randomSeed);
-        grid = new Grid(radius,height,cellSize,cellHeight);
-        grid.SmoothGrid(smoothTimes,smoothFactor);
+        _myGrid = new MyGrid(radius,height,cellSize,cellHeight);
+        _myGrid.SmoothGrid(smoothTimes,smoothFactor);
     }
 
     public void Update()
@@ -38,25 +39,30 @@ public class GridGenerator : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             Random.InitState(randomSeed);
-            grid = new Grid(radius,height,cellSize,cellHeight);
-            grid.SmoothGrid(smoothTimes,smoothFactor);
+            _myGrid = new MyGrid(radius,height,cellSize,cellHeight);
+            _myGrid.SmoothGrid(smoothTimes,smoothFactor);
         }
 
-        foreach (var vertexY in grid.vertexes_y)
+        foreach (var vertexY in _myGrid.vertexes_y)
         {
-            if (Vector3.Distance(vertexY.CurPos,activeTest.position)<2)
+            if (Vector3.Distance(vertexY.CurPos,activeTest.position)<.5f)
             {
                 vertexY.isActive = true;
-            }else if (Vector3.Distance(vertexY.CurPos,inactiveTest.position)<2)
+            }else if (Vector3.Distance(vertexY.CurPos,inactiveTest.position)<.5f)
             {
                 vertexY.isActive = false;
             }
+        }
+
+        foreach (var cube in _myGrid.subQuadCuebs)
+        {
+            cube.UpdateBits();
         }
     }
 
     private void OnDrawGizmos()
     {
-        if (grid != null)
+        if (_myGrid != null)
         {                
             Gizmos.color = Color.white;
 
@@ -90,7 +96,7 @@ public class GridGenerator : MonoBehaviour
             
 
             //subQuad
-            /*foreach (var subQuads in grid.subQuads)
+            /*foreach (var subQuads in _myGrid.subQuads)
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(subQuads.vertexA.CurPos,subQuads.vertexB.CurPos);
@@ -104,7 +110,7 @@ public class GridGenerator : MonoBehaviour
                 Gizmos.DrawSphere(subQuads.vertexD.CurPos,.1f);
             }*/
             
-            //
+            /*//
             foreach (var vertexY in grid.vertexes_y)
             {
                 if (vertexY.isActive)
@@ -116,7 +122,36 @@ public class GridGenerator : MonoBehaviour
                     Gizmos.color = Color.white;
                 }
                 Gizmos.DrawSphere(vertexY.CurPos,.1f);
-            }
+            }*/
+            
+            //subQuadCuebs
+            /*GUI.color = Color.red;
+            foreach (var subQuadCueb in _myGrid.subQuadCuebs)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Gizmos.DrawLine(subQuadCueb.vertexs[i].CurPos,subQuadCueb.vertexs[(i+1)%4].CurPos);
+                    Gizmos.DrawLine(subQuadCueb.vertexs[i+4].CurPos,subQuadCueb.vertexs[(i+1)%4+4].CurPos);
+                    Gizmos.DrawLine(subQuadCueb.vertexs[i].CurPos,subQuadCueb.vertexs[i+4].CurPos);
+                }
+                
+                foreach (var vertexY in subQuadCueb.vertexs)
+                {
+                    if (vertexY.isActive)
+                    {
+                        Gizmos.color = Color.red;
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.white;
+                    }
+                    Gizmos.DrawSphere(vertexY.CurPos,.1f);
+                }
+                //Gizmos.DrawSphere(subQuadCueb.GetCenterPos(),.1f);
+                Handles.Label(subQuadCueb.GetCenterPos(),subQuadCueb.ToString());
+            }*/
+            
+        
             
 
         }

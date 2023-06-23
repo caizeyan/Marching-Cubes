@@ -1,25 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
+using UnityEditor.UI;
 using UnityEngine;
 
 /// <summary>
 /// 地图
 /// </summary>
-public class Grid
+public class MyGrid
 {
-   public static Grid Instant;
+   public static MyGrid Instant;
    private int radius;
    private int cellSize;
    private int height ;
    private int cellHeight;
    public  Dictionary<int, Edge> edges = new Dictionary<int, Edge>();
-   public List<VertexHex> vertexes_hex ;
+
+   public List<Vertex> vertexs = new List<Vertex>();     //所有顶点
+   
+   public List<VertexHex> vertexes_hex ;  //六边形顶点
    public List<Triangle> triangles;
    public List<Quad> quads = new List<Quad>();
    //细分四边形
    public List<SubQuad> subQuads = new List<SubQuad>();
    public List<VertexY> vertexes_y = new List<VertexY>();
-   public Grid(int radius,int height,int cellSize ,int cellHeight )
+   public Dictionary<Vertex, VertexY[]> yMap = new Dictionary<Vertex, VertexY[]>();
+   public List<SubQuadCueb> subQuadCuebs = new List<SubQuadCueb>();
+   
+   
+   public MyGrid(int radius,int height,int cellSize ,int cellHeight )
    {
       Instant = this;
       this.radius = radius;
@@ -30,13 +39,61 @@ public class Grid
       triangles = Triangle.TriangleHex(radius, vertexes_hex);
       MergeAllTriangles();
       SubDivide();
+      InitVertexs();
+      InitSubeQuadCubes();
+   }
+
+   public void InitVertexs()
+   {
+      foreach (var vertexHex in vertexes_hex)
+      {
+         vertexs.Add(vertexHex);
+      }
+
+      foreach (var edge in edges)
+      {
+         vertexs.Add(edge.Value.mid);
+      }
+
+      foreach (var triangle in triangles)
+      {
+         vertexs.Add(triangle.center);
+      }
+      foreach (var quad in quads)
+      {
+         vertexs.Add(quad.center);
+      }
+      
       for (int i = 0; i < height; i++)
       {
-         for (int j = 0; j < vertexes_hex.Count; j++)
+         for (int j = 0; j < vertexs.Count; j++)
          {
-            vertexes_y.Add(new VertexY(vertexes_hex[j],i));
+            var verY = new VertexY(vertexs[j], i);
+            vertexes_y.Add(verY);
+            if (!yMap.ContainsKey(vertexs[j]))
+            {
+               yMap.Add(vertexs[j],new VertexY[height]);
+            }
+            yMap[vertexs[j]][i] = verY;
          }
       }
+   }
+   
+
+   public void InitSubeQuadCubes()
+   {
+      for (int i = 0; i < height-1; i++)
+      {
+         for (int j = 0; j < subQuads.Count; j++)
+         {
+            subQuadCuebs.Add(new SubQuadCueb(subQuads[j],i));
+         }
+      }
+   }
+
+   public VertexY GetVertexY(Vertex v, int y)
+   {
+      return yMap[v][y];
    }
 
    public int GetCellHeight()
@@ -135,16 +192,8 @@ public class Grid
       int uid = Edge.GetEdgeUID(a, b);
       if (edges.ContainsKey(uid))
       {
-         edges[uid] = null;
+         edges.Remove(uid);
       }
    }
-    
-   public static void RemoveEdge(Edge edge,Dictionary<int,Edge> edges)
-   {
-     
-      if (edges.ContainsKey(edge.UID))
-      {
-         edges[edge.UID] = null;
-      }
-   }
+   
 }
